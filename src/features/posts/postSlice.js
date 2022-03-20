@@ -24,27 +24,38 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
 //   },
 // ]
 
+export const addNewPost = createAsyncThunk(
+  'posts/addNewPost',
+  //The payload creator receives the partial '{title, content, user} object
+  async (initialPost) => {
+    //we send the initial data to the fake API server
+    const response = await client.post('/fakeApi/posts', initialPost)
+    //the response includes the complete post object, including unique ID
+    return response.data
+  }
+)
+
 const postSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    postAdded: {
-      reducer(state, action) {
-        state.posts.push(action.payload)
-      },
-      prepare(title, content, userId) {
-        return {
-          payload: {
-            id: nanoid(),
-            date: new Date().toISOString(),
-            title,
-            content,
-            user: userId,
-            reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 },
-          },
-        }
-      },
-    },
+    // postAdded: {
+    //   reducer(state, action) {
+    //     state.posts.push(action.payload)
+    //   },
+    //   prepare(title, content, userId) {
+    //     return {
+    //       payload: {
+    //         id: nanoid(),
+    //         date: new Date().toISOString(),
+    //         title,
+    //         content,
+    //         user: userId,
+    //         reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 },
+    //       },
+    //     }
+    //   },
+    // },
 
     reactionAdded(state, action) {
       const { postId, reaction } = action.payload
@@ -76,6 +87,10 @@ const postSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        //We can directly add the new post object to our posts array
+        state.posts.push(action.payload)
       })
   },
 })
