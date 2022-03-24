@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { PostAuthor } from './PostAuthor'
 import { ReactionButtons } from './ReactionButtons'
-import { SelectAllPosts, fetchPosts } from './postSlice'
+import { selectAllPosts, fetchPosts } from './postSlice'
 import { TimeAgo } from './TimeAgo'
 import { Spinner } from '../../components/Spinner'
 
@@ -27,7 +27,7 @@ const PostExcerpt = ({ post }) => {
 
 export const PostList = () => {
   const dispatch = useDispatch()
-  const posts = useSelector(SelectAllPosts)
+  const posts = useSelector(selectAllPosts)
 
   const postStatus = useSelector((state) => state.posts.status)
   const error = useSelector((state) => state.posts.error)

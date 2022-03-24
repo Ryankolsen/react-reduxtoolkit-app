@@ -1,4 +1,5 @@
-import { createSlice, nanoid, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+//createSelector is a function that generates memoized selectors, only recalculate results when inputs change
 import { client } from '../../api/client'
 // import { sub } from 'date-fns'
 
@@ -99,7 +100,13 @@ export const { postAdded, postUpdated, reactionAdded } = postSlice.actions
 
 export default postSlice.reducer
 
-export const SelectAllPosts = (state) => state.posts.posts
+export const selectAllPosts = (state) => state.posts.posts
+
+//this is a memoized selector:
+export const selectPostByUser = createSelector(
+  [selectAllPosts, (state, userId) => userId],
+  (posts, userId) => posts.filter((post) => post.user === userId)
+)
 
 export const selectPostByID = (state, postID) =>
   state.posts.posts.find((post) => post.id === postID)
